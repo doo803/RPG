@@ -63,8 +63,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="map\Inq XP MT- Medieval Town.png">
-      <Name>Inq XP MT- Medieval Town</Name>
+    <Compile Include="map\stage1\Stage1_1.png">
+      <Name>Stage1_1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

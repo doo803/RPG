@@ -18,7 +18,7 @@ namespace RPG
 
         int[,] mapArray, playerArray;
         int collideMapToggle = 0;
-        Texture2D canPass, notPass, playerTile;
+        Texture2D canPass, notPass, playerTile, currentTextureMap;
         bool showCollideMap, showPlayerMap;
 
         // Constructor
@@ -26,7 +26,7 @@ namespace RPG
         {
             showCollideMap = false;
             playerArray = new int[18, 32];
-            player = new Player(5, 5);
+            player = new Player(10, 10);
         }
 
         // Load Content
@@ -35,6 +35,7 @@ namespace RPG
             canPass = Content.Load<Texture2D>("map/tile");
             notPass = Content.Load<Texture2D>("map/!tile");
             playerTile = Content.Load<Texture2D>("map/playerTile");
+            stage1.LoadContent(Content);
         }
 
         // Update
@@ -46,6 +47,7 @@ namespace RPG
             player.Update(gameTime);
 
             mapArray = stage1.currentMap;
+            currentTextureMap = stage1.currentTextureMap;
 
             // Show / hide collision grid
             ToggleGrids();
@@ -61,6 +63,7 @@ namespace RPG
         // DRAW METHOD
         public void Draw(SpriteBatch spriteBatch)
         {
+            DrawMapTexture(spriteBatch);
             DrawCollisionGrid(spriteBatch);
             DrawPlayerOnArray(spriteBatch);
         }
@@ -188,6 +191,14 @@ namespace RPG
                 }
             }
             #endregion
+        }
+
+        // Draw the actual texture
+        public void DrawMapTexture(SpriteBatch spriteBatch)
+        {
+            #region
+            spriteBatch.Draw(currentTextureMap, Vector2.Zero, Color.White);
+            #endregion          
         }
     }
 }
