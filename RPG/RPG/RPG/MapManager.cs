@@ -43,13 +43,18 @@ namespace RPG
             KeyboardState keyState = Keyboard.GetState();
 
             stage1.Update(gameTime);
+            player.Update(gameTime);
+
             mapArray = stage1.currentMap;
 
             // Show / hide collision grid
             ToggleGrids();
             
             // Update player's position on current mapArray
-            UpdatePlayerPos(playerArray);
+            UpdatePlayerPosToArray(playerArray);
+
+            // Check for player movement and if the move is valid
+            PlayerMovement();
             
         }
 
@@ -57,6 +62,7 @@ namespace RPG
         public void Draw(SpriteBatch spriteBatch)
         {
             DrawCollisionGrid(spriteBatch);
+            DrawPlayerOnArray(spriteBatch);
         }
 
         // Toggle collision and player grid
@@ -76,7 +82,7 @@ namespace RPG
                 else if (collideMapToggle == 1 && showCollideMap == true)
                 {
                     showCollideMap = false;
-                    showPlayerMap = true;
+                    showPlayerMap = false;
                 }
             }
 
@@ -124,14 +130,9 @@ namespace RPG
                 {
                     for (int j = 0; j < 32; j++)
                     {
-                        if (mapArray[i, j] == 0)
+                        if (playerArray[i, j] == 1)
                         {
-                            spriteBatch.Draw(canPass, new Rectangle(j * 32, i * 32, 32, 32), Color.White * 0.5f);
-                        }
-
-                        if (mapArray[i, j] == 1)
-                        {
-                            spriteBatch.Draw(notPass, new Rectangle(j * 32, i * 32, 32, 32), Color.White * 0.5f);
+                            spriteBatch.Draw(playerTile, new Rectangle(j * 32, i * 32, 32, 32), Color.White * 0.5f);
                         }
                     }
                 }
@@ -140,10 +141,52 @@ namespace RPG
         }
 
         // Update player position
-        public void UpdatePlayerPos(int[,] map)
+        public void UpdatePlayerPosToArray(int[,] map)
         {
             #region
-            map[player.posY, player.posX] = 5;
+            map[player.posY, player.posX] = 1;
+            #endregion
+        }
+
+        // Check for player movement
+        public void PlayerMovement()
+        {
+            #region
+            if(player.movingUp)
+            {
+                if(mapArray[player.posY - 1,player.posX] == 0)
+                {
+                    playerArray[player.posY, player.posX] = 0;
+                    player.posY--;
+                }
+            }
+
+            else if(player.movingDown)
+            {
+                if (mapArray[player.posY + 1, player.posX] == 0)
+                {
+                    playerArray[player.posY, player.posX] = 0;
+                    player.posY++;
+                }
+            }
+
+            else if(player.movingLeft)
+            {
+                if (mapArray[player.posY, player.posX - 1] == 0)
+                {
+                    playerArray[player.posY, player.posX] = 0;
+                    player.posX--;
+                }
+            }
+
+            else if (player.movingRight)
+            {
+                if (mapArray[player.posY, player.posX + 1] == 0)
+                {
+                    playerArray[player.posY, player.posX] = 0;
+                    player.posX++;
+                }
+            }
             #endregion
         }
     }
