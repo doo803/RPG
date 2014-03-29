@@ -36,6 +36,7 @@ namespace RPG
             notPass = Content.Load<Texture2D>("map/!tile");
             playerTile = Content.Load<Texture2D>("map/playerTile");
             stage1.LoadContent(Content);
+            player.LoadContent(Content);
         }
 
         // Update
@@ -57,7 +58,19 @@ namespace RPG
 
             // Check for player movement and if the move is valid
             PlayerMovement();
-            
+
+            // Update player coords on Stage1
+            stage1.playerX = player.posX;
+            stage1.playerY = player.posY;
+
+            if (stage1.changePlayerX != -1 && stage1.changePlayerY != -1)
+            {
+                playerArray[player.posY, player.posX] = 0;
+                player.posX = stage1.changePlayerX;
+                player.posY = stage1.changePlayerY;
+                stage1.changePlayerY = -1;
+                stage1.changePlayerX = -1;
+            }
         }
 
         // DRAW METHOD
@@ -66,6 +79,7 @@ namespace RPG
             DrawMapTexture(spriteBatch);
             DrawCollisionGrid(spriteBatch);
             DrawPlayerOnArray(spriteBatch);
+            player.Draw(spriteBatch);
         }
 
         // Toggle collision and player grid
@@ -155,39 +169,67 @@ namespace RPG
         public void PlayerMovement()
         {
             #region
-            if(player.movingUp)
+            if(player.movingUpCheck)
             {
-                if(mapArray[player.posY - 1,player.posX] == 0)
+                if (mapArray[player.posY - 1, player.posX] != 1)
                 {
+                    player.movingUpCheck = false;
+                    player.movingUp = true;
                     playerArray[player.posY, player.posX] = 0;
                     player.posY--;
                 }
+
+                else
+                {
+                    player.movingUpCheck = false;
+                }
             }
 
-            else if(player.movingDown)
+            else if(player.movingDownCheck)
             {
-                if (mapArray[player.posY + 1, player.posX] == 0)
+                if (mapArray[player.posY + 1, player.posX] != 1)
                 {
+                    player.movingDownCheck = false;
+                    player.movingDown = true;
                     playerArray[player.posY, player.posX] = 0;
                     player.posY++;
                 }
-            }
 
-            else if(player.movingLeft)
-            {
-                if (mapArray[player.posY, player.posX - 1] == 0)
+                else
                 {
-                    playerArray[player.posY, player.posX] = 0;
-                    player.posX--;
+                    player.movingDownCheck = false;
                 }
             }
 
-            else if (player.movingRight)
+            else if(player.movingLeftCheck)
             {
-                if (mapArray[player.posY, player.posX + 1] == 0)
+                if (mapArray[player.posY, player.posX - 1] != 1)
                 {
+                    player.movingLeftCheck = false;
+                    player.movingLeft = true;
+                    playerArray[player.posY, player.posX] = 0;
+                    player.posX--;
+                }
+
+                else 
+                {
+                    player.movingLeftCheck = false;
+                }
+            }
+
+            else if (player.movingRightCheck)
+            {
+                if (mapArray[player.posY, player.posX + 1] != 1)
+                {
+                    player.movingRightCheck = false;
+                    player.movingRight = true;
                     playerArray[player.posY, player.posX] = 0;
                     player.posX++;
+                }
+
+                else
+                {
+                    player.movingRightCheck = false;
                 }
             }
             #endregion
