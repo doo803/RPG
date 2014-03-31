@@ -137,6 +137,7 @@ namespace RPG
             texture1_1 = Content.Load<Texture2D>("map/stage1/Stage1_1");
             texture1_1_tent1 = Content.Load<Texture2D>("map/stage1/1_1_tent1");
             texture1_1_tent2 = Content.Load<Texture2D>("map/stage1/1_1_tent2");
+            texture1_2 = Content.Load<Texture2D>("map/stage1/Stage1_2");
         }
 
         // Update method
@@ -211,7 +212,7 @@ namespace RPG
                 case "1_2":
                     {
                         currentMap = map1_2;
-
+                        currentTextureMap = texture1_2;
                         break;
                     }
                 #endregion
