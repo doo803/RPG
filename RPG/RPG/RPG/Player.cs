@@ -41,7 +41,7 @@ namespace RPG
             spriteHeight = 31;
             spriteWidth = 32;
             
-            moveReset = 16; // 33 ticks
+            moveReset = 16; 
 
             animationPosition = new Vector2((posX * 32), ((posY) * 32) + (currentFrame * 2));
         }
@@ -123,19 +123,6 @@ namespace RPG
             }
             #endregion
 
-            // Allow for 'Run' mode (Halves reset timer)
-            #region
-            //if (keyState.IsKeyDown(Keys.X))
-            //{
-            //    moveReset = 15;
-            //}
-
-            //else if (keyState.IsKeyUp(Keys.X))
-            //{
-            //    moveReset = 30;
-            //}
-            #endregion
-
             // Reset moving booleans
             #region
             if (movingUp || movingRight || movingDown || movingLeft)
@@ -159,14 +146,34 @@ namespace RPG
                 moveInstantReset++;
             }
 
-            if(keyState.IsKeyUp(Keys.Up) && keyState.IsKeyUp(Keys.Down) && keyState.IsKeyUp(Keys.Left) && keyState.IsKeyUp(Keys.Right) && moveInstantReset >= 30)
+            if(keyState.IsKeyUp(Keys.Up) && keyState.IsKeyUp(Keys.Down) &&
+                keyState.IsKeyUp(Keys.Left) && keyState.IsKeyUp(Keys.Right) &&
+                moveInstantReset >= 16)
             {
-                moveUp = moveReset - 1;
+                
                 moveRight = moveReset - 1;
                 moveDown = moveReset - 1;
                 moveLeft = moveReset - 1;
                 moveInstantReset = 0;
             }
+
+            //if (keyState.IsKeyUp(Keys.Up))
+            //{
+            //    moveUp = moveReset - 1;
+            //}
+            //if (keyState.IsKeyUp(Keys.Down))
+            //{
+            //    moveDown = moveReset - 1;
+            //}
+            //if (keyState.IsKeyUp(Keys.Right))
+            //{
+            //    moveRight = moveReset - 1;
+            //}
+            //if (keyState.IsKeyUp(Keys.Left))
+            //{
+            //    moveLeft = moveReset - 1;
+            //}
+
             #endregion
 
             PlayerMoveAnimations(gameTime);

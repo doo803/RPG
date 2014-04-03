@@ -15,11 +15,16 @@ namespace RPG
     {
         Stage1 stage1 = new Stage1();
         Player player;
+        SpriteFont tileFont;
 
         int[,] mapArray, playerArray;
         int collideMapToggle = 0;
-        Texture2D canPass, notPass, playerTile, currentTextureMap;
-        bool showCollideMap, showPlayerMap;
+        int x = 0;
+        int currentStage;
+        Texture2D canPass, notPass, changeTile, playerTile, currentTextureMap;
+        public bool showCollideMap, showPlayerMap, editCollideMap, mouseInWindow;
+        int b = 0;
+        int e = 0;
 
         // Constructor
         public MapManager()
@@ -27,6 +32,7 @@ namespace RPG
             showCollideMap = false;
             playerArray = new int[18, 32];
             player = new Player(10, 10);
+            currentStage = 1;
         }
 
         // Load Content
@@ -34,9 +40,11 @@ namespace RPG
         {
             canPass = Content.Load<Texture2D>("map/tile");
             notPass = Content.Load<Texture2D>("map/!tile");
+            changeTile = Content.Load<Texture2D>("map/transitionTile");
             playerTile = Content.Load<Texture2D>("map/playerTile");
             stage1.LoadContent(Content);
             player.LoadContent(Content);
+            tileFont = Content.Load<SpriteFont>("TileFont");
         }
 
         // Update
@@ -52,6 +60,10 @@ namespace RPG
 
             // Show / hide collision grid
             ToggleGrids();
+
+            // Allow editing of grids
+            CollisionEditor();
+            stage1.ChangeMap();
             
             // Update player's position on current mapArray
             UpdatePlayerPosToArray(playerArray);
@@ -80,6 +92,14 @@ namespace RPG
             DrawCollisionGrid(spriteBatch);
             DrawPlayerOnArray(spriteBatch);
             player.Draw(spriteBatch);
+
+            // Show edit mode is active
+            #region
+            if (editCollideMap)
+            {
+                spriteBatch.DrawString(tileFont, "*Editing mode active*", new Vector2(10, 10), Color.White * 0.8f);
+            }
+            #endregion
         }
 
         // Toggle collision and player grid
@@ -123,12 +143,19 @@ namespace RPG
                     {
                         if (mapArray[i, j] == 0)
                         {
-                            spriteBatch.Draw(canPass, new Rectangle(j * 32, i * 32, 32, 32), Color.White * 0.5f);
+                            spriteBatch.Draw(canPass, new Rectangle(j * 32, i * 32, 32, 32), Color.White * 0.2f);
                         }
 
                         if (mapArray[i, j] == 1)
                         {
                             spriteBatch.Draw(notPass, new Rectangle(j * 32, i * 32, 32, 32), Color.White * 0.5f);
+                        }
+
+                        if (mapArray[i, j] >= 2)
+                        {
+                            spriteBatch.Draw(changeTile, new Rectangle(j * 32, i * 32, 32, 32), Color.White * 0.5f);
+                            spriteBatch.DrawString(tileFont, mapArray[i, j].ToString(), 
+                                new Vector2((j * 32) + 10, (i * 32) + 5), Color.White);
                         }
                     }
                 }
@@ -241,6 +268,103 @@ namespace RPG
             #region
             spriteBatch.Draw(currentTextureMap, Vector2.Zero, Color.White);
             #endregion          
+        }
+
+        // Change collision with mouse
+        public void CollisionEditor()
+        {
+            #region
+            KeyboardState keyState = Keyboard.GetState();
+            var mouseState = Mouse.GetState();
+            var mousePosition = new Point(mouseState.X, mouseState.Y);
+
+            int z = 0;
+            int y = 0;
+
+            if (keyState.IsKeyDown(Keys.OemTilde))
+            {
+                z = 1;
+            }
+
+            if (keyState.IsKeyUp(Keys.OemTilde))
+            {
+                x = 0;
+            }
+
+            if (z != y)
+            {
+                x++;
+            }
+
+            if (x == 1 && editCollideMap == false)
+            {
+                editCollideMap = true;
+            }
+
+            else if (x == 1 && editCollideMap == true)
+            {
+                editCollideMap = false;
+            }
+
+            if (editCollideMap == true)
+            {
+                int a = 0;               
+                int c = 0;
+
+                if (mouseState.LeftButton == ButtonState.Pressed && mouseInWindow)
+                {
+                    c = 1;
+                }
+
+                if (mouseState.LeftButton == ButtonState.Released)
+                {
+                    b = 0;
+                }
+
+                if (c != a)
+                {
+                    b++;
+                }
+
+                if (b == 1)
+                {
+                    if (currentStage == 1)
+                    {
+                        stage1.changeMapX = (int)(mousePosition.X / 32);
+                        stage1.changeMapY = (int)(mousePosition.Y / 32);
+                        stage1.changeMapTo = 1;
+                    }
+                }
+
+                int d = 0;
+                int f = 0;
+
+                if (mouseState.RightButton == ButtonState.Pressed && mouseInWindow)
+                {
+                    d = 1;
+                }
+
+                if (mouseState.RightButton == ButtonState.Released)
+                {
+                    e = 0;
+                }
+
+                if (d != f)
+                {
+                    e++;
+                }
+
+                if (e == 1)
+                {
+                    if (currentStage == 1)
+                    {
+                        stage1.changeMapX = (int)(mousePosition.X / 32);
+                        stage1.changeMapY = (int)(mousePosition.Y / 32);
+                        stage1.changeMapTo = -1;
+                    }
+                }
+            }
+            #endregion
         }
     }
 }

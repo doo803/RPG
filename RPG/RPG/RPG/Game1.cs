@@ -55,6 +55,7 @@ namespace RPG
                 this.Exit();
 
             mapManager.Update(gameTime);
+            mapManager.mouseInWindow = IsMouseInsideWindow();
 
             base.Update(gameTime);
         }
@@ -62,7 +63,7 @@ namespace RPG
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
+      
             spriteBatch.Begin();
 
             mapManager.Draw(spriteBatch);
@@ -70,6 +71,13 @@ namespace RPG
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public bool IsMouseInsideWindow()
+        {
+            MouseState ms = Mouse.GetState();
+            Point pos = new Point(ms.X, ms.Y);
+            return GraphicsDevice.Viewport.Bounds.Contains(pos);
         }
     }
 }
